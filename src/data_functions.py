@@ -4,11 +4,19 @@ import pandas as pd
 from sklearn.utils import shuffle as util_shuffle
 
 
-def load_data(dataset: str, path: str = '../data/wu_data/'):
+def load_complete_data(name: str, path: str = './data/complete_data'):
+    
+    X = pd.read_csv(f'{path}/{name}.csv', header=None).to_numpy()
+    Y = pd.read_csv(f'{path}/{name}_label.csv', header=None).to_numpy().ravel()
+    
+    return X, Y
+
+
+def load_cross_validation_data(dataset: str, path: str = './data/10_folded'):
     if dataset not in ['adversarial', 'cancer', 'car', 'cifar10', 'divorce', 'face', 'random', 'spiral', 'wine']:
         raise ValueError('Dataset must be one of adversarial, cancer, car, cifar10, divorce, face, random, spiral, wine')
 
-    files = os.listdir(f'../data/wu_data/10_folded/{dataset}')
+    files = os.listdir(f'{path}/{dataset}')
 
     fold_dict = {}
 
@@ -19,20 +27,20 @@ def load_data(dataset: str, path: str = '../data/wu_data/'):
             fold_dict[fold_num] = {}
 
         if len(file_splitted) == 2:
-            fold_dict[fold_num]["X_train"] = pd.read_csv(f'../data/wu_data/10_folded/{dataset}/{file}', header=None).to_numpy()
+            fold_dict[fold_num]["X_train"] = pd.read_csv(f'{path}/{dataset}/{file}', header=None).to_numpy()
             continue
         
         if len(file_splitted) == 3:
             if file_splitted[2] == "test":
-                fold_dict[fold_num]["X_test"] = pd.read_csv(f'../data/wu_data/10_folded/{dataset}/{file}', header=None).to_numpy()
+                fold_dict[fold_num]["X_test"] = pd.read_csv(f'{path}/{dataset}/{file}', header=None).to_numpy()
                 continue
             
             elif file_splitted[2] == "label":
-                fold_dict[fold_num]["y_train"] = pd.read_csv(f'../data/wu_data/10_folded/{dataset}/{file}', header=None).to_numpy()
+                fold_dict[fold_num]["y_train"] = pd.read_csv(f'{path}/{dataset}/{file}', header=None).to_numpy()
                 continue
 
         if len(file_splitted) == 4:
-            fold_dict[fold_num]["y_test"] = pd.read_csv(f'../data/wu_data/10_folded/{dataset}/{file}', header=None).to_numpy()
+            fold_dict[fold_num]["y_test"] = pd.read_csv(f'{path}/{dataset}/{file}', header=None).to_numpy()
             continue
 
         raise ValueError(f'Something went wrong. Got {file} and was not able to handle it.')

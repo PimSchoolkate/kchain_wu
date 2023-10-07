@@ -43,6 +43,8 @@ class kchain:
 
         if X_test is not None and y_test is not None:
             validate = True
+        else:
+            validate = False
 
         hsic_previous = 0
 
